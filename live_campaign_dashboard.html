@@ -1,0 +1,382 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.wrap{padding:1rem 0}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:10px}
+.topbar h2{font-size:17px;font-weight:500;color:var(--color-text-primary)}
+.topbar p{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font-size:12px;padding:6px 14px;border-radius:var(--border-radius-md);cursor:pointer;display:flex;align-items:center;gap:5px;font-family:var(--font-sans)}
+.btn-primary{background:var(--color-background-info);color:var(--color-text-info);border:0.5px solid var(--color-border-info)}
+.btn-ghost{background:transparent;color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)}
+.btn-ghost:hover{background:var(--color-background-secondary)}
+.btn-danger{background:var(--color-background-danger);color:var(--color-text-danger);border:0.5px solid var(--color-border-danger)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.25rem}
+.kpi{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px}
+.kpi-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.kpi-value{font-size:21px;font-weight:500;color:var(--color-text-primary);line-height:1.1}
+.kpi-sub{font-size:11px;color:var(--color-text-secondary);margin-top:3px}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px}
+.card.full{grid-column:1/-1}
+.card-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;font-size:11px;color:var(--color-text-secondary)}
+.legend span{display:flex;align-items:center;gap:4px}
+.ldot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.tbl-wrap{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:1.25rem}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+.tbl th{padding:9px 10px;text-align:left;font-weight:500;font-size:11px;color:var(--color-text-secondary);letter-spacing:.03em;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;user-select:none}
+.tbl th:hover{color:var(--color-text-primary)}
+.tbl td{padding:8px 10px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl tbody tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover td{background:var(--color-background-secondary)}
+.badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px}
+.badge-fb{background:#E6F1FB;color:#0C447C}
+.badge-tik{background:#2C2C2A;color:#D3D1C7}
+.badge-ig{background:#FBEAF0;color:#72243E}
+.badge-snap{background:#FAEEDA;color:#633806}
+.badge-goo{background:#EAF3DE;color:#27500A}
+.green{color:#1D9E75;font-weight:500}
+.red-t{color:#E24B4A;font-weight:500}
+.muted{color:var(--color-text-secondary)}
+
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:999}
+.modal{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:20px;width:480px;max-width:96vw}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:14px;color:var(--color-text-primary)}
+.field{margin-bottom:10px}
+.field label{font-size:12px;color:var(--color-text-secondary);display:block;margin-bottom:3px}
+.field input,.field select{width:100%;font-size:13px;padding:7px 10px;border-radius:var(--border-radius-md)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.filter-row input,.filter-row select{font-size:12px;padding:5px 9px;height:30px;border-radius:var(--border-radius-md)}
+</style>
+
+<div class="wrap">
+<h2 class="sr-only">Campaign analytics dashboard for April 2026 — live editable data with charts and KPIs for 19 campaigns across Facebook, TikTok, Instagram, Google and Snapchat</h2>
+
+<div class="topbar">
+  <div>
+    <h2>Campaign dashboard — April 2026</h2>
+    <p>Live data · edit any row · add campaigns · auto-saves in session</p>
+  </div>
+  <div class="actions">
+    <button class="btn btn-primary" onclick="openAdd()"><i class="ti ti-plus" aria-hidden="true"></i> Add campaign</button>
+    <button class="btn btn-ghost" onclick="exportCSV()"><i class="ti ti-download" aria-hidden="true"></i> Export CSV</button>
+  </div>
+</div>
+
+<div class="kpis" id="kpiGrid"></div>
+
+<div class="charts-row">
+  <div class="card">
+    <div class="card-title">Top 8 campaigns — spend (EGP)</div>
+    <div class="legend"><span><span class="ldot" style="background:#378ADD"></span>Total cost</span></div>
+    <div style="position:relative;height:260px"><canvas id="costChart" role="img" aria-label="Bar chart of top 8 campaign spend in EGP">Campaign spend breakdown.</canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Leads by source — top 8</div>
+    <div class="legend" id="leadLeg"></div>
+    <div style="position:relative;height:260px"><canvas id="leadChart" role="img" aria-label="Stacked bar chart of leads by form, WhatsApp and Messenger">Lead source breakdown.</canvas></div>
+  </div>
+  <div class="card full">
+    <div class="card-title">Platform share</div>
+    <div class="legend" id="platLeg"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;text-align:center">Spend distribution</div>
+        <div style="position:relative;height:200px"><canvas id="platSpend" role="img" aria-label="Donut chart of spend by platform">Spend by platform.</canvas></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;text-align:center">Lead distribution</div>
+        <div style="position:relative;height:200px"><canvas id="platLeads" role="img" aria-label="Donut chart of leads by platform">Leads by platform.</canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="filter-row">
+  <input type="text" id="srch" placeholder="Search campaign..." style="width:160px" oninput="render()">
+  <select id="platFilter" onchange="render()">
+    <option value="">All platforms</option>
+    <option>Facebook</option><option>TikTok</option><option>Instagram</option>
+    <option>Google</option><option>Snapchat</option>
+  </select>
+  <select id="sortSel" onchange="render()">
+    <option value="total">Sort: spend</option>
+    <option value="leads">Sort: leads</option>
+    <option value="whatsapp">Sort: WhatsApp</option>
+    <option value="messenger">Sort: Messenger</option>
+    <option value="cpl">Sort: CPL</option>
+  </select>
+</div>
+
+<div class="tbl-wrap">
+<table class="tbl" style="table-layout:fixed">
+  <colgroup>
+    <col style="width:22%"><col style="width:11%"><col style="width:10%"><col style="width:9%">
+    <col style="width:9%"><col style="width:9%"><col style="width:9%"><col style="width:11%">
+    <col style="width:10%">
+  </colgroup>
+  <thead>
+    <tr>
+      <th onclick="setSort('name')">Campaign <i class="ti ti-selector" style="font-size:11px" aria-hidden="true"></i></th>
+      <th>Platform</th>
+      <th onclick="setSort('leads')">Form leads <i class="ti ti-selector" style="font-size:11px" aria-hidden="true"></i></th>
+      <th onclick="setSort('messenger')">Messenger <i class="ti ti-selector" style="font-size:11px" aria-hidden="true"></i></th>
+      <th onclick="setSort('whatsapp')">WhatsApp <i class="ti ti-selector" style="font-size:11px" aria-hidden="true"></i></th>
+      <th>Total leads</th>
+      <th onclick="setSort('total')">Spend (EGP) <i class="ti ti-selector" style="font-size:11px" aria-hidden="true"></i></th>
+      <th onclick="setSort('cpl')">CPL (EGP) <i class="ti ti-selector" style="font-size:11px" aria-hidden="true"></i></th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="tBody"></tbody>
+</table>
+</div>
+
+</div>
+
+<div id="modalWrap" style="display:none">
+  <div class="modal-bg" onclick="if(event.target===this)closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h3 id="modalTitle">Add campaign</h3>
+      <div class="field"><label>Campaign name</label><input id="fName" type="text" placeholder="e.g. INDRIVE EGY Q2"></div>
+      <div class="field-row">
+        <div class="field"><label>Platform</label>
+          <select id="fPlat">
+            <option>Facebook</option><option>TikTok</option><option>Instagram</option>
+            <option>Google</option><option>Snapchat</option>
+          </select>
+        </div>
+        <div class="field"><label>Total spend (EGP)</label><input id="fSpend" type="number" min="0" step="0.01" placeholder="0.00"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Form leads</label><input id="fLeads" type="number" min="0" placeholder="0"></div>
+        <div class="field"><label>Messenger leads</label><input id="fMsg" type="number" min="0" placeholder="0"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>WhatsApp leads</label><input id="fWa" type="number" min="0" placeholder="0"></div>
+        <div class="field"><label>Start date</label><input id="fStart" type="text" placeholder="4/1/2026"></div>
+      </div>
+      <div class="field"><label>End date</label><input id="fEnd" type="text" placeholder="4/30/2026"></div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveRow()">Save campaign</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let data = [
+  {id:1,  name:"UBER X (sara-martha)",          plat:"Facebook",  leads:1305, msg:0,    wa:301,  total:41965,    start:"4/6/2026",  end:"5/3/2026"},
+  {id:2,  name:"Uber Scooter",                   plat:"TikTok",    leads:297,  msg:0,    wa:0,    total:11806,    start:"4/6/2026",  end:"5/3/2026"},
+  {id:3,  name:"Uber Scooter (face)",            plat:"Facebook",  leads:231,  msg:0,    wa:261,  total:4814,     start:"4/6/2026",  end:"5/3/2026"},
+  {id:4,  name:"Morooco Ngia",                   plat:"Facebook",  leads:927,  msg:522,  wa:676,  total:10940,    start:"4/1/2026",  end:"4/30/2026"},
+  {id:5,  name:"MOROCCO INDRIVE (CAR-MOTO)",     plat:"Facebook",  leads:945,  msg:0,    wa:1133, total:10316,    start:"4/1/2026",  end:"4/30/2026"},
+  {id:6,  name:"INDRIVE EGY (REHAM)",            plat:"Facebook",  leads:1796, msg:0,    wa:260,  total:31907,    start:"4/1/2026",  end:"4/30/2026"},
+  {id:7,  name:"INDRIVE EGY (ESRAA)",            plat:"Facebook",  leads:2236, msg:0,    wa:96,   total:32077,    start:"4/1/2026",  end:"4/30/2026"},
+  {id:8,  name:"Scooter Hurghda",                plat:"Facebook",  leads:595,  msg:325,  wa:0,    total:16492,    start:"4/1/2026",  end:"4/30/2026"},
+  {id:9,  name:"HEETCH",                         plat:"Facebook",  leads:8054, msg:2780, wa:1437, total:237764,   start:"3/23/2026", end:"5/19/2026"},
+  {id:10, name:"Uber Nigeria",                   plat:"TikTok",    leads:1295, msg:0,    wa:0,    total:12932,    start:"4/6/2026",  end:"5/3/2026"},
+  {id:11, name:"Nigeria Indrive",                plat:"Facebook",  leads:560,  msg:0,    wa:528,  total:12570,    start:"4/6/2026",  end:"5/3/2026"},
+  {id:12, name:"Indrive Algeria (car+scooter)",  plat:"Facebook",  leads:2536, msg:0,    wa:1361, total:23385,    start:"4/1/2026",  end:"4/30/2026"},
+  {id:13, name:"Indrive Algeria N",              plat:"Facebook",  leads:1243, msg:0,    wa:0,    total:4809,     start:"4/1/2026",  end:"4/30/2026"},
+  {id:14, name:"DIDI CAIRO Sara",                plat:"Facebook",  leads:1283, msg:0,    wa:56,   total:18511,    start:"3/26/2026", end:"4/12/2026"},
+  {id:15, name:"DIDI CAIRO Engy",                plat:"Facebook",  leads:978,  msg:0,    wa:20,   total:17607,    start:"3/26/2026", end:"4/12/2026"},
+  {id:16, name:"DIDI Bassant",                   plat:"Facebook",  leads:873,  msg:0,    wa:4,    total:12422,    start:"3/26/2026", end:"4/12/2026"},
+  {id:17, name:"Employment Moataz",              plat:"Facebook",  leads:0,    msg:0,    wa:0,    total:1568,     start:"4/1/2026",  end:"4/30/2026"},
+  {id:18, name:"Employment",                     plat:"Facebook",  leads:0,    msg:0,    wa:0,    total:6951,     start:"4/1/2026",  end:"4/30/2026"},
+  {id:19, name:"TALABAT",                        plat:"Facebook",  leads:0,    msg:0,    wa:598,  total:4492,     start:"4/1/2026",  end:"4/30/2026"},
+];
+let nextId = 20;
+let sortKey = "total";
+let sortDir = -1;
+let editId = null;
+
+const platColors = {Facebook:"#378ADD",TikTok:"#2C2C2A",Instagram:"#D4537E",Google:"#639922",Snapchat:"#BA7517"};
+const platBadge  = {Facebook:"badge-fb",TikTok:"badge-tik",Instagram:"badge-ig",Google:"badge-goo",Snapchat:"badge-snap"};
+
+function n(v,dec=0){ return (+v).toLocaleString(undefined,{minimumFractionDigits:dec,maximumFractionDigits:dec}); }
+
+function filtered(){
+  const s = document.getElementById("srch").value.toLowerCase();
+  const p = document.getElementById("platFilter").value;
+  return data.filter(d=>(!s||d.name.toLowerCase().includes(s))&&(!p||d.plat===p));
+}
+function getSorted(arr){
+  return [...arr].sort((a,b)=>{
+    let va=a[sortKey]??0, vb=b[sortKey]??0;
+    if(sortKey==="cpl"){ va=a.leads>0?a.total/a.leads:999999; vb=b.leads>0?b.total/b.leads:999999; }
+    if(sortKey==="name"){ return sortDir*(a.name.localeCompare(b.name)); }
+    return sortDir*(vb-va);
+  });
+}
+function setSort(k){ if(sortKey===k)sortDir*=-1; else{sortKey=k;sortDir=-1;} render(); }
+
+function renderKPIs(arr){
+  const sp=arr.reduce((s,d)=>s+d.total,0);
+  const tl=arr.reduce((s,d)=>s+d.leads,0);
+  const tw=arr.reduce((s,d)=>s+d.wa,0);
+  const tm=arr.reduce((s,d)=>s+d.msg,0);
+  const all=tl+tw+tm;
+  const avgCPL=tl>0?sp/tl:0;
+  const top=[...arr].sort((a,b)=>b.leads-a.leads)[0];
+  const kpis=[
+    {label:"Total spend",    value:"EGP "+n(sp,0), sub:arr.length+" campaigns"},
+    {label:"Form leads",     value:n(tl),           sub:"direct form"},
+    {label:"WhatsApp leads", value:n(tw),           sub:tl>0?Math.round(tw/all*100)+"% of total":"—"},
+    {label:"Messenger leads",value:n(tm),           sub:tl>0?Math.round(tm/all*100)+"% of total":"—"},
+    {label:"All leads",      value:n(all),          sub:"form + WA + MSG"},
+    {label:"Avg CPL",        value:"EGP "+n(avgCPL,1), sub:"cost per form lead"},
+  ];
+  document.getElementById("kpiGrid").innerHTML=kpis.map(k=>`
+    <div class="kpi"><div class="kpi-label">${k.label}</div>
+    <div class="kpi-value">${k.value}</div>
+    <div class="kpi-sub">${k.sub}</div></div>`).join("");
+}
+
+let cCost,cLead,cPS,cPL;
+function renderCharts(arr){
+  const top8=getSorted(arr).slice(0,8);
+  const lbls=top8.map(d=>d.name.length>14?d.name.slice(0,13)+"…":d.name);
+
+  document.getElementById("leadLeg").innerHTML=[["#1D9E75","Form"],["#378ADD","WhatsApp"],["#D4537E","Messenger"]]
+    .map(([c,l])=>`<span><span class="ldot" style="background:${c}"></span>${l}</span>`).join("");
+
+  if(cCost)cCost.destroy();
+  cCost=new Chart(document.getElementById("costChart"),{type:"bar",
+    data:{labels:lbls,datasets:[{label:"Spend (EGP)",data:top8.map(d=>d.total),backgroundColor:"#378ADD",borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{font:{size:9},color:"#888"},grid:{display:false}},
+              y:{ticks:{font:{size:9},color:"#888",callback:v=>v>=1000?Math.round(v/1000)+"k":v},grid:{color:"rgba(128,128,128,.1)"}}}}});
+
+  if(cLead)cLead.destroy();
+  cLead=new Chart(document.getElementById("leadChart"),{type:"bar",
+    data:{labels:lbls,datasets:[
+      {label:"Form",      data:top8.map(d=>d.leads),backgroundColor:"#1D9E75",borderRadius:2},
+      {label:"WhatsApp",  data:top8.map(d=>d.wa),   backgroundColor:"#378ADD",borderRadius:2},
+      {label:"Messenger", data:top8.map(d=>d.msg),  backgroundColor:"#D4537E",borderRadius:2},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{stacked:true,ticks:{font:{size:9},color:"#888"},grid:{display:false}},
+              y:{stacked:true,ticks:{font:{size:9},color:"#888"},grid:{color:"rgba(128,128,128,.1)"}}}}});
+
+  const platTot={},platLds={};
+  arr.forEach(d=>{platTot[d.plat]=(platTot[d.plat]||0)+d.total;platLds[d.plat]=(platLds[d.plat]||0)+d.leads+d.wa+d.msg;});
+  const pkeys=Object.keys(platTot);
+  const pcols=pkeys.map(p=>platColors[p]||"#888");
+
+  document.getElementById("platLeg").innerHTML=pkeys.map((p,i)=>
+    `<span><span class="ldot" style="background:${pcols[i]}"></span>${p}</span>`).join("");
+
+  if(cPS)cPS.destroy();
+  cPS=new Chart(document.getElementById("platSpend"),{type:"doughnut",
+    data:{labels:pkeys,datasets:[{data:pkeys.map(p=>platTot[p]),backgroundColor:pcols,borderWidth:2,borderColor:"#fff"}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+
+  if(cPL)cPL.destroy();
+  cPL=new Chart(document.getElementById("platLeads"),{type:"doughnut",
+    data:{labels:pkeys,datasets:[{data:pkeys.map(p=>platLds[p]),backgroundColor:pcols,borderWidth:2,borderColor:"#fff"}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+}
+
+function renderTable(arr){
+  const rows=getSorted(arr);
+  document.getElementById("tBody").innerHTML=rows.map(d=>{
+    const tl=d.leads+d.wa+d.msg;
+    const cpl=d.leads>0?(d.total/d.leads).toFixed(1):"—";
+    const cplClass=d.leads>0&&(d.total/d.leads)<20?"green":d.leads>0&&(d.total/d.leads)<50?"":"muted";
+    return`<tr>
+      <td title="${d.name}" style="font-weight:500">${d.name}</td>
+      <td><span class="badge ${platBadge[d.plat]||"badge-fb"}">${d.plat}</span></td>
+      <td>${d.leads>0?n(d.leads):'<span class="muted">—</span>'}</td>
+      <td>${d.msg>0?'<span style="color:#0F6E56;font-weight:500">'+n(d.msg)+'</span>':'<span class="muted">—</span>'}</td>
+      <td>${d.wa>0?'<span style="color:#185FA5;font-weight:500">'+n(d.wa)+'</span>':'<span class="muted">—</span>'}</td>
+      <td style="font-weight:500">${tl>0?n(tl):'<span class="muted">—</span>'}</td>
+      <td style="font-weight:500">${n(d.total,0)}</td>
+      <td class="${cplClass}">${cpl!=="—"?"EGP "+cpl:'<span class="muted">—</span>'}</td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-ghost" style="padding:3px 8px;font-size:11px" onclick="openEdit(${d.id})">
+          <i class="ti ti-edit" style="font-size:12px" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-danger" style="padding:3px 8px;font-size:11px;margin-left:4px" onclick="deleteRow(${d.id})">
+          <i class="ti ti-trash" style="font-size:12px" aria-hidden="true"></i>
+        </button>
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+function render(){
+  const arr=filtered();
+  renderKPIs(arr);
+  renderCharts(arr);
+  renderTable(arr);
+}
+
+function openAdd(){
+  editId=null;
+  document.getElementById("modalTitle").textContent="Add campaign";
+  ["fName","fSpend","fLeads","fMsg","fWa","fStart","fEnd"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("fPlat").value="Facebook";
+  document.getElementById("modalWrap").style.display="block";
+}
+
+function openEdit(id){
+  const d=data.find(x=>x.id===id); if(!d)return;
+  editId=id;
+  document.getElementById("modalTitle").textContent="Edit campaign";
+  document.getElementById("fName").value=d.name;
+  document.getElementById("fPlat").value=d.plat;
+  document.getElementById("fSpend").value=d.total;
+  document.getElementById("fLeads").value=d.leads;
+  document.getElementById("fMsg").value=d.msg;
+  document.getElementById("fWa").value=d.wa;
+  document.getElementById("fStart").value=d.start;
+  document.getElementById("fEnd").value=d.end;
+  document.getElementById("modalWrap").style.display="block";
+}
+
+function closeModal(){ document.getElementById("modalWrap").style.display="none"; editId=null; }
+
+function saveRow(){
+  const name=document.getElementById("fName").value.trim();
+  if(!name){alert("Please enter a campaign name.");return;}
+  const row={
+    id: editId||nextId++,
+    name,
+    plat:document.getElementById("fPlat").value,
+    total:parseFloat(document.getElementById("fSpend").value)||0,
+    leads:parseInt(document.getElementById("fLeads").value)||0,
+    msg:parseInt(document.getElementById("fMsg").value)||0,
+    wa:parseInt(document.getElementById("fWa").value)||0,
+    start:document.getElementById("fStart").value,
+    end:document.getElementById("fEnd").value,
+  };
+  if(editId){ const i=data.findIndex(x=>x.id===editId); if(i>-1)data[i]=row; }
+  else data.push(row);
+  closeModal(); render();
+}
+
+function deleteRow(id){
+  if(!confirm("Delete this campaign?"))return;
+  data=data.filter(x=>x.id!==id); render();
+}
+
+function exportCSV(){
+  const hdr="Campaign,Platform,Form Leads,Messenger,WhatsApp,Total Leads,Spend (EGP),CPL (EGP)";
+  const rows=data.map(d=>{
+    const tl=d.leads+d.wa+d.msg;
+    const cpl=d.leads>0?(d.total/d.leads).toFixed(2):"";
+    return[d.name,d.plat,d.leads,d.msg,d.wa,tl,d.total.toFixed(2),cpl].join(",");
+  });
+  const blob=new Blob([[hdr,...rows].join("\n")],{type:"text/csv"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="campaigns_april_2026.csv";a.click();
+}
+
+render();
+</script>
